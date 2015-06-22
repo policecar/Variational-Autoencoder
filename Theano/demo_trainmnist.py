@@ -8,13 +8,14 @@ Otto Fabius - <ottofabius@gmail.com>
 
 """This script trains an auto-encoder on the MNIST dataset and keeps track of the lowerbound"""
 
-#python trainmnist.py -s mnist.npy
+#python demo_trainmnist.py -s mnist.npy
 
 import VariationalAutoencoder
 import numpy as np
 import argparse
 import time
-import gzip, pickle
+import gzip
+import pickle
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d","--double", help="Train on hidden layer of previously trained AE - specify params", default = False)
@@ -24,8 +25,12 @@ args = parser.parse_args()
 print("Loading MNIST data")
 #Retrieved from: http://deeplearning.net/data/mnist/mnist.pkl.gz
 
-f = gzip.open('mnist.pkl.gz', 'rb')
-(x_train, t_train), (x_valid, t_valid), (x_test, t_test)  = pickle.load(f)
+f = gzip.open('../mnist.pkl.gz', 'rb')
+# work-around to deal with incompatibilities between pickle for Python 2.x and Python 3.x
+u = pickle._Unpickler(f)
+u.encoding = 'latin1'
+(x_train, t_train), (x_valid, t_valid), (x_test, t_test) = u.load()
+# (x_train, t_train), (x_valid, t_valid), (x_test, t_test) = pickle.load(f)
 f.close()
 
 data = x_train
