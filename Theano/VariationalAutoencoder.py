@@ -29,7 +29,7 @@ class VA:
 
 
     def initParams(self):
-    	"""Initialize weights and biases, depending on if continuous data is modeled an extra weight matrix is created"""
+        """Initialize weights and biases, depending on if continuous data is modeled an extra weight matrix is created"""
         W1 = np.random.normal(0,self.sigmaInit,(self.HU_encoder,self.dimX))
         b1 = np.random.normal(0,self.sigmaInit,(self.HU_encoder,1))
 
@@ -50,13 +50,13 @@ class VA:
             b6 = np.random.normal(0,self.sigmaInit,(self.dimX,1))
             self.params = [W1,W2,W3,W4,W5,W6,b1,b2,b3,b4,b5,b6]
         else:
-	        self.params = [W1,W2,W3,W4,W5,b1,b2,b3,b4,b5]
+            self.params = [W1,W2,W3,W4,W5,b1,b2,b3,b4,b5]
 
         self.h = [0.01] * len(self.params)
 
 
     def initH(self,miniBatch):
-    	"""Compute the gradients and use this to initialize h"""
+        """Compute the gradients and use this to initialize h"""
         totalGradients = self.getGradients(miniBatch)
         for i in xrange(len(totalGradients)):
             self.h[i] += totalGradients[i]*totalGradients[i]
@@ -108,7 +108,7 @@ class VA:
         self.lowerboundfunction = th.function(gradvariables + [x,eps], logp, on_unused_input='ignore')
 
     def iterate(self, data):
-       	"""Main method, slices data in minibatches and performs an iteration"""
+        """Main method, slices data in minibatches and performs an iteration"""
         [N,dimX] = data.shape
         batches = np.arange(0,N,self.batch_size)
         if batches[-1] != N:
@@ -120,7 +120,7 @@ class VA:
             self.updateParams(totalGradients,N,miniBatch.shape[0])
 
     def getLowerBound(self,data):
-    	"""Use this method for example to compute lower bound on testset"""
+        """Use this method for example to compute lower bound on testset"""
         lowerbound = 0
         [N,dimX] = data.shape
         batches = np.arange(0,N,self.batch_size)
@@ -136,7 +136,7 @@ class VA:
 
 
     def getGradients(self,miniBatch):
-    	"""Compute the gradients for one minibatch and check if these do not contain NaNs"""
+        """Compute the gradients for one minibatch and check if these do not contain NaNs"""
         totalGradients = [0] * len(self.params)
         for l in xrange(self.L):
             e = np.random.normal(0,1,[self.dimZ,miniBatch.shape[1]])
@@ -149,7 +149,7 @@ class VA:
         return totalGradients
 
     def updateParams(self,totalGradients,N,current_batch_size):
-    	"""Update the parameters, taking into account AdaGrad and a prior"""
+        """Update the parameters, taking into account AdaGrad and a prior"""
         for i in xrange(len(self.params)):
             self.h[i] += totalGradients[i]*totalGradients[i]
             if i < 5 or (i < 6 and len(self.params) == 12):
